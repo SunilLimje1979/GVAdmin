@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Jeweller List</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Jeweller List</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% include "includes/message.html" %}
+
+    <!-- Search Filters -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col">
+                       <select class="form-control" name="SearchMonth" required>
+                            <option value="">Select Month</option>
+                            {% for m_val, m_name in months %}
+                                <option value="{{ m_val }}" {% if m_val == selected_month %}selected{% endif %}>{{ m_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-control" name="SearchYear" required>
+                            <option value="">Select Year</option>
+                            {% for y in years %}
+                                <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-table mb-5">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="table_id" class="table table-hover table-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">Sr. No</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Mobile No.</th>
+                                    <th>Email ID</th>
+                                    <th>Client Code</th>
+                                    <th>Status</th>
+                                    <th>UPI ID</th>
+                                    <th>Bank A/C Name</th>
+                                    <th>Bank A/C No.</th>
+                                    <th>Bank Name</th>
+                                    <th>Branch Name</th>
+                                    <th>IFSC Code</th>
+                                    <th>Branch Address</th>
+                           
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for company in companies %}
+                                <tr onclick="window.location='{% url 'user_list' company.ClientCode %}'" style="cursor:pointer;">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ company.BusinessName }}</td>
+                                    <td>{{ company.BusinessAddress }}</td>
+                                    <td>{{ company.OwnerContact }}</td>
+                                    <td>{{ company.OwnerEmail }}</td>
+                                    <td>{{ company.ClientCode }}</td>
+                                    <td>
+                                        {% if company.BusinessStatus == "1" %}
+                                            <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ company.UPIID }}</td>
+                                    <td>{{ company.BankAccountName }}</td>
+                                    <td>{{ company.BankAccountNo }}</td>
+                                    <td>{{ company.BankName }}</td>
+                                    <td>{{ company.BranchName }}</td>
+                                    <td>{{ company.IFSCCode }}</td>
+                                    <td>{{ company.BranchAddress }}</td>
+                            
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="15" class="text-center">No companies found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

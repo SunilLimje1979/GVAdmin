@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">User List</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'jeweller_list' %}">Jeweller List</a></li>
+                    <li class="breadcrumb-item active">User List</li>
+                </ul>
+                {% comment %} <h5>Client ID = {{ client_id }}</h5> {% endcomment %}
+            </div>
+        </div>
+    </div>
+
+    {% include "includes/message.html" %}
+
+    <!-- Search Filters -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col">
+                        <select class="form-control" name="SearchMonth">
+                            <option value="">Select Month</option>
+                            {% for m_val, m_name in months %}
+                                <option value="{{ m_val }}" {% if SearchMonth|stringformat:"s" == m_val|stringformat:"s" %}selected{% endif %}>
+                                    {{ m_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-control" name="SearchYear">
+                            <option value="">Select Year</option>
+                            {% for y in years %}
+                                <option value="{{ y }}" {% if SearchYear == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-table mb-3">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="table_id" class="table table-hover table-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Sr. No</th>
+                                    <th>Name</th>
+                                    <th>Mobile No.</th>
+                                    <th>Status</th>
+                                    <th>Created On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ user.UserFullName }}</td>
+                                    <td>{{ user.UserMobileNo }}</td>
+                                    <td>
+                                        {% if user.UserStatus == "1" %}
+                                            <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user.CreatedOn }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No users found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
