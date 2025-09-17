@@ -1,7 +1,41 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block extra_css %}
+<style>
+  /* Same modal table styling */
+  #jewellerDetailsModal .table { border-collapse: collapse; }
+  #jewellerDetailsModal .table th, 
+  #jewellerDetailsModal .table td {
+      border: none;
+      border-bottom: 1px solid #e9ecef;
+      padding: 0.9rem 0.5rem;
+      vertical-align: middle;
+  }
+  #jewellerDetailsModal .table tbody tr:last-child th,
+  #jewellerDetailsModal .table tbody tr:last-child td { border-bottom: none; }
+  #jewellerDetailsModal .table th { font-weight: 600; text-align: left; }
+  #jewellerDetailsModal .table td { text-align: right; }
+    /* Make the Bootstrap close icon white */
+  .close-btn {
+    background-color: white;
+    color: #585141;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    padding: 0 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    }
 
+    .close-btn:hover {
+    background-color: #ddd;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
 <div class="content container-fluid">
     <div class="page-header">
         <div class="row align-items-center">
@@ -53,54 +87,55 @@
             <div class="card card-table mb-5">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="table_id" class="table table-hover table-center mb-0">
+                        <table id="jewellers-table" class="table table-hover table-center mb-0">
                             <thead>
                                 <tr>
-                                    <th style="width: 50px;">Sr. No</th>
+                                    <th>Sr. No</th>
                                     <th>Name</th>
                                     <th>Address</th>
                                     <th>Mobile No.</th>
                                     <th>Email ID</th>
-                                    <th>Client Code</th>
+                                    <th>Created On</th>
                                     <th>Status</th>
-                                    <th>UPI ID</th>
-                                    <th>Bank A/C Name</th>
-                                    <th>Bank A/C No.</th>
-                                    <th>Bank Name</th>
-                                    <th>Branch Name</th>
-                                    <th>IFSC Code</th>
-                                    <th>Branch Address</th>
-                           
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for company in companies %}
-                                <tr onclick="window.location='{% url 'user_list' company.ClientCode %}'" style="cursor:pointer;">
+                                <tr data-url="{% url 'user_list' company.ClientCode %}">
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ company.BusinessName }}</td>
                                     <td>{{ company.BusinessAddress }}</td>
                                     <td>{{ company.OwnerContact }}</td>
                                     <td>{{ company.OwnerEmail }}</td>
-                                    <td>{{ company.ClientCode }}</td>
+                                    <td>{{ company.CreatedOn }}</td>
                                     <td>
                                         {% if company.BusinessStatus == "1" %}
-                                            <span class="badge badge-success">Active</span>
+                                            <span class="badge bg-success">Active</span>
                                         {% else %}
-                                            <span class="badge badge-danger">Inactive</span>
+                                            <span class="badge bg-danger">Inactive</span>
                                         {% endif %}
                                     </td>
-                                    <td>{{ company.UPIID }}</td>
-                                    <td>{{ company.BankAccountName }}</td>
-                                    <td>{{ company.BankAccountNo }}</td>
-                                    <td>{{ company.BankName }}</td>
-                                    <td>{{ company.BranchName }}</td>
-                                    <td>{{ company.IFSCCode }}</td>
-                                    <td>{{ company.BranchAddress }}</td>
-                            
+                                    <td>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-info btn-details"
+                                                style="background-color:#FFBC53; color:white; border:none;"
+                                                data-business="{{ company.BusinessName }}"
+                                                data-client="{{ company.ClientCode }}"
+                                                data-upi="{{ company.UPIID }}"
+                                                data-bankname="{{ company.BankName }}"
+                                                data-branch="{{ company.BranchName }}"
+                                                data-accountname="{{ company.BankAccountName }}"
+                                                data-accountno="{{ company.BankAccountNo }}"
+                                                data-ifsc="{{ company.IFSCCode }}"
+                                                data-branchaddr="{{ company.BranchAddress }}">
+                                            Details
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="15" class="text-center">No companies found</td>
+                                    <td colspan="8" class="text-center">No companies found</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -113,4 +148,58 @@
     </div>
 </div>
 
-{% endblock content %}
+<!-- Modal -->
+<div class="modal fade" id="jewellerDetailsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+     <div class="modal-content">
+        <div class="modal-header" style="background-color:#585141; color:white;">
+            <h5 class="modal-title" id="jewellerModalTitle">Jeweller Details</h5>
+            <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+           <table class="table">
+              <tbody>
+                 <tr><th>Client Code</th><td id="j_client"></td></tr>
+                 <tr><th>UPI ID</th><td id="j_upi"></td></tr>
+                 <tr><th>Bank A/C Name</th><td id="j_accountname"></td></tr>
+                 <tr><th>Bank A/C No.</th><td id="j_accountno"></td></tr>
+                 <tr><th>Bank Name</th><td id="j_bankname"></td></tr>
+                 <tr><th>Branch Name</th><td id="j_branch"></td></tr>
+                 <tr><th>IFSC Code</th><td id="j_ifsc"></td></tr>
+                 <tr><th>Branch Address</th><td id="j_branchaddr"></td></tr>
+              </tbody>
+           </table>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function () {
+    // Row click redirect
+    $('#jewellers-table').on('click', 'tr[data-url]', function(e) {
+        // Prevent redirect if clicking on button
+        if ($(e.target).closest('.btn-details').length) return;
+        window.location.href = $(this).data('url');
+    });
+
+    // Details button click
+    $('.btn-details').on('click', function() {
+        $('#jewellerModalTitle').text($(this).data('business') + " - Details");
+        $('#j_client').text($(this).data('client'));
+        $('#j_upi').text($(this).data('upi'));
+        $('#j_accountname').text($(this).data('accountname'));
+        $('#j_accountno').text($(this).data('accountno'));
+        $('#j_bankname').text($(this).data('bankname'));
+        $('#j_branch').text($(this).data('branch'));
+        $('#j_ifsc').text($(this).data('ifsc'));
+        $('#j_branchaddr').text($(this).data('branchaddr'));
+
+        const modal = new bootstrap.Modal(document.getElementById('jewellerDetailsModal'));
+        modal.show();
+    });
+});
+</script>
+{% endblock %}
