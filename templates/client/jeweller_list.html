@@ -159,7 +159,7 @@
         <div class="modal-body">
            <table class="table">
               <tbody>
-                 <tr><th>Client Code</th><td id="j_client"></td></tr>
+                 {% comment %} <tr><th>Client Code</th><td id="j_client"></td></tr> {% endcomment %}
                  <tr><th>UPI ID</th><td id="j_upi"></td></tr>
                  <tr><th>Bank A/C Name</th><td id="j_accountname"></td></tr>
                  <tr><th>Bank A/C No.</th><td id="j_accountno"></td></tr>
@@ -188,7 +188,7 @@ $(document).ready(function () {
     // Details button click
     $('.btn-details').on('click', function() {
         $('#jewellerModalTitle').text($(this).data('business') + " - Details");
-        $('#j_client').text($(this).data('client'));
+        // $('#j_client').text($(this).data('client'));
         $('#j_upi').text($(this).data('upi'));
         $('#j_accountname').text($(this).data('accountname'));
         $('#j_accountno').text($(this).data('accountno'));
