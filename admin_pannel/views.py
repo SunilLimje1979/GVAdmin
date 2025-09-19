@@ -169,3 +169,7 @@ def user_list(request, id):
         "SearchMonth": SearchMonth,
     }
     return render(request, "client/user_list.html", context)
+
+def edit_register(request, id):
+    print("Registration ID:", id)   # ✅ this will print in your Django runserver console
+    return render(request, 'client/edit_register.html')

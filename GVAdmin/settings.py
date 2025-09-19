@@ -126,7 +126,7 @@ STATIC_URL = "/GVAdmin/static/"
 
 STATICFILES_DIRS = [
     BASE_DIR / "GVAdmin/static",
-    #  BASE_DIR / "static",
+    # BASE_DIR / "static",
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

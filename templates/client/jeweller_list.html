@@ -91,21 +91,33 @@
                             <thead>
                                 <tr>
                                     <th>Sr. No</th>
+                                    <th>Logo</th>
                                     <th>Name</th>
-                                    <th>Address</th>
+                                    <th>City</th>
                                     <th>Mobile No.</th>
                                     <th>Email ID</th>
                                     <th>Created On</th>
                                     <th>Status</th>
+                                    <th>Bank <br> Details</th>
                                     <th>Action</th>
+                                    <th>Invoice</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for company in companies %}
                                 <tr data-url="{% url 'user_list' company.ClientCode %}">
                                     <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        {% if company.ShopPhotoURL %}
+                                            <img src="{{ company.ShopPhotoURL }}" 
+                                                alt="Logo" 
+                                                style="width: 70px; height: 70px; object-fit: contain; border: 1px solid #ddd; border-radius: 8px; padding: 3px; background-color: #fff;">
+                                        {% else %}
+                                            <span class="text-muted">No Logo</span>
+                                        {% endif %}
+                                    </td>
                                     <td>{{ company.BusinessName }}</td>
-                                    <td>{{ company.BusinessAddress }}</td>
+                                    <td>{{ company.BusinessCityId }}</td>
                                     <td>{{ company.OwnerContact }}</td>
                                     <td>{{ company.OwnerEmail }}</td>
                                     <td>{{ company.CreatedOn }}</td>
@@ -122,6 +134,7 @@
                                                 style="background-color:#FFBC53; color:white; border:none;"
                                                 data-business="{{ company.BusinessName }}"
                                                 data-client="{{ company.ClientCode }}"
+                                                data-address="{{ company.BusinessAddress }}"  
                                                 data-upi="{{ company.UPIID }}"
                                                 data-bankname="{{ company.BankName }}"
                                                 data-branch="{{ company.BranchName }}"
@@ -132,6 +145,17 @@
                                             Details
                                         </button>
                                     </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'edit_register' company.ClientCode %}" 
+                                        class="btn btn-sm btn-warning" title="Edit Jeweller">
+                                        <i class="fa fa-edit fa-lg"></i> </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="#" class="btn btn-sm btn-primary" title="View Invoice">
+                                            <i class="fa-solid fa-file-invoice fa-lg"></i> 
+                                        </a>
+                                    </td>
+
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -160,6 +184,7 @@
            <table class="table">
               <tbody>
                  {% comment %} <tr><th>Client Code</th><td id="j_client"></td></tr> {% endcomment %}
+                <tr><th>Address</th><td id="j_address"></td></tr>
                  <tr><th>UPI ID</th><td id="j_upi"></td></tr>
                  <tr><th>Bank A/C Name</th><td id="j_accountname"></td></tr>
                  <tr><th>Bank A/C No.</th><td id="j_accountno"></td></tr>
@@ -189,6 +214,7 @@ $(document).ready(function () {
     $('.btn-details').on('click', function() {
         $('#jewellerModalTitle').text($(this).data('business') + " - Details");
         // $('#j_client').text($(this).data('client'));
+        $('#j_address').text($(this).data('address'));
         $('#j_upi').text($(this).data('upi'));
         $('#j_accountname').text($(this).data('accountname'));
         $('#j_accountno').text($(this).data('accountno'));
