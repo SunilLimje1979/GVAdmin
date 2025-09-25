@@ -30,18 +30,17 @@
             <div class="card">
                 <div class="card-body">
                     <form action="" method="POST" enctype="multipart/form-data">
-                    {% comment %} <form action="{% url 'edit_register' jeweller.ClientCode %}" method="POST" enctype="multipart/form-data"> {% endcomment %}
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-12">
                                 <h5 class="form-title"><span>Jeweller Details</span></h5>
                             </div>
 
-                            <!-- Client Code (readonly) -->
+                            <!-- Client Code -->
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label>Client Code</label>
-                                    <input type="text" class="form-control" name="ClientCode" value="{{ jeweller.ClientCode }}" readonly>
+                                    <input type="text" class="form-control" name="ClientCode" value="{{ jeweller.ClientCode|default:client_code }}" readonly>
                                 </div>
                             </div>
 
@@ -69,27 +68,19 @@
                                 </div>
                             </div>
 
-                            <!-- Login Pin -->
-                            <div class="col-12 col-sm-6">
-                                <div class="form-group">
-                                    <label>Login Pin</label>
-                                    <input type="text" class="form-control" name="LoginPin" value="{{ jeweller.LoginPin }}" required>
-                                </div>
-                            </div>
-
                             <!-- Business Address -->
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label>Business Address</label>
-                                    <input type="text" class="form-control" name="BusinessAddress" value="{{ jeweller.BusinessAddress }}" required>
+                                    <input type="text" class="form-control" name="BusinessAddress" value="{{ jeweller.BusinessAddress }}">
                                 </div>
                             </div>
 
                             <!-- Business City -->
-                            <div class="col-12 col-sm-6">
+                            {% comment %} <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label>Business City</label>
-                                    <input type="text" class="form-control" name="BusinessCityId" value="{{ jeweller.BusinessCityId }}" required>
+                                    <input type="text" class="form-control" name="BusinessCityId" value="{{ jeweller.BusinessCityId }}">
                                 </div>
                             </div>
 
@@ -97,20 +88,20 @@
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label>Business State</label>
-                                    <input type="text" class="form-control" name="BusinessStateId" value="{{ jeweller.BusinessStateId }}" required>
+                                    <input type="text" class="form-control" name="BusinessStateId" value="{{ jeweller.BusinessStateId }}">
                                 </div>
-                            </div>
+                            </div> {% endcomment %}
 
                             <!-- Owner Email -->
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label>Owner Email</label>
-                                    <input type="email" class="form-control" name="OwnerEmail" value="{{ jeweller.OwnerEmail }}" required>
+                                    <input type="email" class="form-control" name="OwnerEmail" value="{{ jeweller.OwnerEmail }}">
                                 </div>
                             </div>
 
                             <!-- Shop Photo -->
-                            <div class="col-12 col-sm-6">
+                            {% comment %} <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label>Shop Photo</label>
                                     {% if jeweller.ShopPhotoURL %}
@@ -118,9 +109,9 @@
                                             <img src="{{ jeweller.ShopPhotoURL }}" alt="Shop Logo" style="width: 100px; height: 100px; object-fit: contain; border:1px solid #ddd; border-radius: 6px; padding:2px;">
                                         </div>
                                     {% endif %}
-                                    <input type="file" class="form-control" name="ShopPhoto">
+                                    <input type="file" class="form-control" name="ShopPhotoURL">
                                 </div>
-                            </div>
+                            </div> {% endcomment %}
 
                             <!-- Submit -->
                             <div class="col-12 mt-3">
@@ -135,5 +126,4 @@
     </div>
 
 </div>
-
 {% endblock content %}

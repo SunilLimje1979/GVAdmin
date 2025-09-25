@@ -55,8 +55,31 @@ def logout(request):
     messages.success(request, "You have successfully signed out")
     return redirect('login')
 
+
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    api_url = "https://www.gyaagl.app/goldvault_api/dashboard"
+    data = {}
+    headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+    try:
+        response = requests.post(api_url,headers=headers, timeout=10)
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("message_code") == 1000:
+                data = result.get("message_data", {})
+            else:
+                messages.error(request, result.get("message_text", "Failed to fetch dashboard data"))
+        else:
+            messages.error(request, f"API request failed with status {response.status_code}")
+    except Exception as e:
+        messages.error(request, f"Error while fetching dashboard data: {str(e)}")
+
+    return render(request, "dashboard.html", {
+        "dashboard": data
+    })
 
 def jeweller_list(request):
     companies = []  # default empty list
@@ -170,6 +193,30 @@ def user_list(request, id):
     }
     return render(request, "client/user_list.html", context)
 
+
 def edit_register(request, id):
-    print("Registration ID:", id)   # ✅ this will print in your Django runserver console
-    return render(request, 'client/edit_register.html')
+    client_code = id 
+
+    # API to fetch client info (for pre-fill)
+    client_info_url = "https://www.gyaagl.app/goldvault_api/clientinfo"
+    payload = {"ClientCode": client_code}
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+        "Origin": "https://www.gyaagl.app",
+        "Referer": "https://www.gyaagl.app/",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    }
+
+    try:
+        response = requests.post(client_info_url, json=payload, headers=headers, timeout=10)
+        data = response.json()
+        if data.get("message_code") == 1000 and data.get("message_data"):
+            client_data = data["message_data"][0]
+    except Exception as e:
+        print(f"Client API error: {str(e)}")
+
+    return render(request, "client/edit_register.html", {
+        "jeweller": client_data,
+        "client_code": client_code,
+    })

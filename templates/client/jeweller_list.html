@@ -97,9 +97,10 @@
                                     <th>Mobile No.</th>
                                     <th>Email ID</th>
                                     <th>Created On</th>
-                                    <th>Status</th>
                                     <th>Bank <br> Details</th>
+                                    <th>Status</th>
                                     <th>Action</th>
+                                    <th>Setup <br>Price </th>
                                     <th>Invoice</th>
                                 </tr>
                             </thead>
@@ -121,17 +122,10 @@
                                     <td>{{ company.OwnerContact }}</td>
                                     <td>{{ company.OwnerEmail }}</td>
                                     <td>{{ company.CreatedOn }}</td>
-                                    <td>
-                                        {% if company.BusinessStatus == "1" %}
-                                            <span class="badge bg-success">Active</span>
-                                        {% else %}
-                                            <span class="badge bg-danger">Inactive</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
+                                   <td class="text-center">
                                         <button type="button" 
-                                                class="btn btn-sm btn-info btn-details"
-                                                style="background-color:#FFBC53; color:white; border:none;"
+                                                class="btn btn-info btn-details"
+                                                style="background-color:#FFBC53; color:white; border:none; font-size:16px; border-radius:4px;"
                                                 data-business="{{ company.BusinessName }}"
                                                 data-client="{{ company.ClientCode }}"
                                                 data-address="{{ company.BusinessAddress }}"  
@@ -142,20 +136,46 @@
                                                 data-accountno="{{ company.BankAccountNo }}"
                                                 data-ifsc="{{ company.IFSCCode }}"
                                                 data-branchaddr="{{ company.BranchAddress }}">
-                                            Details
+                                               <i class="fa fa-inr" style="font-size:16px;"></i> <!-- Bigger Rupee Icon -->
                                         </button>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if company.BusinessStatus == "1" %}
+                                            <button class="btn btn-success" style="width:100px; height:35px;">
+                                                Active
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-danger" style="width:100px; height:35px;">
+                                                Inactive
+                                            </button>
+                                        {% endif %}
                                     </td>
                                     <td class="text-center">
                                         <a href="{% url 'edit_register' company.ClientCode %}" 
                                         class="btn btn-sm btn-warning" title="Edit Jeweller">
                                         <i class="fa fa-edit fa-lg"></i> </a>
                                     </td>
+                                    {% comment %} <td>{{ company.SetupPrice }}</td> {% endcomment %}
+                                    <td class="text-center">
+                                        {% if company.SetupPrice == "Paid" %}
+                                            <button class="btn btn-success" style="width:100px; height:35px;">
+                                            Paid
+                                            </button>
+                                        {% elif company.SetupPrice == "UnPaid" %}
+                                            <button class="btn btn-danger" style="width:100px; height:35px;">
+                                            UnPaid
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-secondary" style="width:100px; height:35px;">
+                                            {{ company.SetupPrice }}
+                                            </button>
+                                        {% endif %}
+                                    </td>
                                     <td class="text-center">
                                         <a href="#" class="btn btn-sm btn-primary" title="View Invoice">
                                             <i class="fa-solid fa-file-invoice fa-lg"></i> 
                                         </a>
                                     </td>
-
                                 </tr>
                                 {% empty %}
                                 <tr>
